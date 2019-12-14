@@ -12,9 +12,10 @@ const int dataPin = 12;
 const int clkPin = 10;
 const int csPin = 11;
 
-int vz = 60;
-int nz = 20;
-int new_vz = 7;
+int upper_bound = 60;
+int bottom_bound = 20;
+int new_upper_bound = 7;
+int new_bottom_bound = 0;
 
 LedControl lc = LedControl(dataPin, clkPin, csPin, displaysCount);
 int prevRow = 0;
@@ -39,12 +40,12 @@ void setup()
 void loop() {
   // Получение значения с ИК датчкиа 
   float irDistance = readDistIR();
-  irDistance = constrain(irDistance, nz, vz);
+  irDistance = constrain(irDistance, bottom_bound,upper_bound);
   // Конвертируем данные в диапазон 0-7
   int curRow = convertToPixel(irDistance);
   // Получаем значения УЗ 
   float usDistance = readDistUs();
-  usDistance = constrain(usDistance, nz, vz);
+  usDistance = constrain(usDistance, bottom_bound, upper_bound);
    Serial.println(usDistance);
   
   // Конвертируем данные в диапазон 0-7
@@ -67,8 +68,8 @@ void loop() {
 int convertToPixel(float dist)
 {
   // Переводи значение с 20 до 70 в значения с 0 до 7 
-  float constrained = constrain(dist, nz, vz);
-  return (int) map(constrained, nz, vz, 0, new_vz);
+  float constrained = constrain(dist, bottom_bound, upper_bound);
+  return (int) map(constrained, bottom_bound, upper_bound, new_bottom_bound, new_upper_bound);
 }
 
 float readDistUs()
